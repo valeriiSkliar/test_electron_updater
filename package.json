@@ -1,0 +1,34 @@
+{
+  "name": "click-counter-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electronmon .",
+    "bild": "electron-builder"
+  },
+  "build": {
+    "appId": "com.yourdomain.clickcounterapp",
+    "productName": "ClickCounterApp",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "valeriiSkliar",
+        "repo": "test_electron_updater",
+        "releaseType": "release"
+      }
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^23.2.0",
+    "electron-builder": "^23.6.0",
+    "electronmon": "^2.0.2"
+  },
+  "dependencies": {
+    "electron-updater": "^5.3.0"
+  }
+}
