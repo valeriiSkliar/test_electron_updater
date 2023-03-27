@@ -1,6 +1,6 @@
 {
   "name": "click-counter-app",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "main": "main.js",
   "scripts": {
@@ -8,15 +8,13 @@
     "dev": "electronmon .",
     "bild": "electron-builder"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/valeriiSkliar/test_electron_updater.git"
+  },
   "build": {
     "appId": "clickcounterapp",
-    "win": {
-      "target":"nsis"
-    },
-    "directories": {
-      "output": "./clickcounterapp"
-    },
-    "productName": "ClickCounterApp",
+    "productName": "clickcounterApp",
     "publish": [
       {
         "provider": "github",
@@ -24,7 +22,17 @@
         "repo": "test_electron_updater",
         "releaseType": "release"
       }
-    ]
+    ],
+    "win": {
+      "target":"nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "directories": {
+      "output": "./clickcounterapp"
+    }
   },
   "keywords": [],
   "author": "",

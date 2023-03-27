@@ -1,6 +1,5 @@
-const { app, BrowserWindow, dialog } = require('electron');
+const { app, BrowserWindow, dialog, ipcMain } = require('electron');
 const { autoUpdater } = require('electron-updater');
-
 const fs = require('fs');
 const path = require('path');
 
@@ -10,12 +9,30 @@ function createWindow() {
         height: 600,
         webPreferences: {
             nodeIntegration: true,
-            contextIsolation:false
-        }
+            contextIsolation: false,
+        },
     });
 
     win.loadFile('./client/index.html');
 }
+
+app.whenReady().then(() => {
+    createWindow();
+    autoUpdater.checkForUpdates();
+
+    app.on('activate', () => {
+        if (BrowserWindow.getAllWindows().length === 0) {
+            createWindow();
+        }
+    });
+});
+
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
+});
+
 autoUpdater.on('update-available', () => {
     autoUpdater.downloadUpdate();
 });
@@ -24,43 +41,22 @@ autoUpdater.on('update-downloaded', () => {
     autoUpdater.quitAndInstall();
 });
 
-app.whenReady().then(() => {
-    createWindow();
-    autoUpdater.checkForUpdates();
-});
-
-// async function promptForUpdate() {
-//     const response = await dialog.showMessageBox({
-//         type: 'question',
-//         buttons: ['Install and Restart', 'Cancel'],
-//         defaultId: 0,
-//         title: 'Update Available',
-//         message: 'An update is available. Do you want to install and restart the application?'
-//     });
-//
-//     if (response.response === 0) {
-//         autoUpdater.quitAndInstall();
-//     }
-// }
-
-
-// app.whenReady().then(() => {
-//     createWindow();
-//     autoUpdater.checkForUpdates();
-// });
-
-// app.whenReady().then(createWindow);
-
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit();
+ipcMain.handle('read-clicks', async () => {
+    try {
+        const dataFilePath = path.join(app.getPath('userData'), 'clickData.txt');
+        const data = await fs.promises.readFile(dataFilePath, 'utf-8');
+        return parseInt(data, 10);
+    } catch (error) {
+        return 0;
     }
 });
 
-app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-        createWindow();
+ipcMain.handle('write-clicks', async (_, clicks) => {
+    try {
+        const dataFilePath = path.join(app.getPath('userData'), 'clickData.txt');
+        await fs.promises.writeFile(dataFilePath, String(clicks));
+        return true;
+    } catch (error) {
+        return false;
     }
-
-
 });
