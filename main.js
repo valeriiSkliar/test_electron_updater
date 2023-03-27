@@ -16,29 +16,38 @@ function createWindow() {
 
     win.loadFile('./client/index.html');
 }
-autoUpdater.on('update-downloaded', () => {
-    promptForUpdate();
+autoUpdater.on('update-available', () => {
+    autoUpdater.downloadUpdate();
 });
 
-async function promptForUpdate() {
-    const response = await dialog.showMessageBox({
-        type: 'question',
-        buttons: ['Install and Restart', 'Cancel'],
-        defaultId: 0,
-        title: 'Update Available',
-        message: 'An update is available. Do you want to install and restart the application?'
-    });
-
-    if (response.response === 0) {
-        autoUpdater.quitAndInstall();
-    }
-}
-
+autoUpdater.on('update-downloaded', () => {
+    autoUpdater.quitAndInstall();
+});
 
 app.whenReady().then(() => {
     createWindow();
     autoUpdater.checkForUpdates();
 });
+
+// async function promptForUpdate() {
+//     const response = await dialog.showMessageBox({
+//         type: 'question',
+//         buttons: ['Install and Restart', 'Cancel'],
+//         defaultId: 0,
+//         title: 'Update Available',
+//         message: 'An update is available. Do you want to install and restart the application?'
+//     });
+//
+//     if (response.response === 0) {
+//         autoUpdater.quitAndInstall();
+//     }
+// }
+
+
+// app.whenReady().then(() => {
+//     createWindow();
+//     autoUpdater.checkForUpdates();
+// });
 
 // app.whenReady().then(createWindow);
 
